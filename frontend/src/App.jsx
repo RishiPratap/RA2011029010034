@@ -1,33 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { useEffect,useState } from 'react';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [data, setData] = useState([{}]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    fetch('http://localhost:8000/getDetails')
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setData(data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setError(error);
+        setLoading(false);
+      });
+  }, []);
+  
   return (
     <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+     <div className='Header'>
+        <img src="https://cdn-icons-png.flaticon.com/512/3/3843.png" alt="Vite Logo" className='logo' height="50px" width="50px" />
+        <h3>Train Booking Schedule</h3>
+     </div>
+     <div className='content_main'>
+     <table id="customers">
+  <tr>
+    <th>trainDetails</th>
+    <th>trainPrice</th>
+    <th>trainSeat</th>
+  </tr>
+  </table>
+        </div>
     </div>
   )
 }

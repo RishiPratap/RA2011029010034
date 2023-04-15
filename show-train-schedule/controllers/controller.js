@@ -25,33 +25,19 @@ exports.getTrainDetails = (req, res) => {
                     headers: {'Authorization': 'Bearer '+accessToken}}).then(
                         (response) => {
                             console.log(response.data);
-                            var data2 = response.data[0];
-                            var data3 = response.data[1];
-                            var depatureTime1 = data2.departureTime.Hours + ":" + data2.departureTime.Minutes;
-                            var depatureTime2 = data3.departureTime.Hours + ":" + data3.departureTime.Minutes;
-                            var timeDifferenceMinutes = data3.departureTime.Minutes - data2.departureTime.Minutes;
-                            if(timeDifferenceMinutes<30){
-                                var isDepatingIn30Min = true;
-                            }
-                            else{
-                                var isDepatingIn30Min = false;
-                            }
-                            var trainSchedule1 = {
-                                "trainName": data2.trainName,
-                                "Departure Time": depatureTime1,
-                                "Price Sleeper": data2.seatsAvailable.sleeper,
-                                "Price AC": data2.seatsAvailable.AC,
-                                "isDepating in 30 min": isDepatingIn30Min
-                            }  
-                            var trainSchedule2 = {
-                                "trainName": data3.trainName,
-                                "Departure Time": depatureTime2,
-                                "Price Sleeper": data3.seatsAvailable.sleeper,
-                                "Price AC": data3.seatsAvailable.AC,
-                                "isDepating in 30 min":isDepatingIn30Min
-                            }       
-                               const pricesOrderSleeper = [];
+                            const trainDetails = [];
+                            const trainPrice = [];
+                            const trainSeat = [];
+                            const trainTime = [];
 
+                            for(let i=0;i<response.data.length;i++){
+                                trainDetails.push(response.data[i].trainName);
+                                trainPrice.push(response.data[i].price);
+                                trainSeat.push(response.data[i].seatsAvailable);
+                                trainTime.push(response.data[i].departureTime.Hours + ":" + response.data[i].departureTime.Minutes);
+                            }
+
+                               const pricesOrderSleeper = [];
                                 for (let i = 0; i < response.data.length; i++) {
                                     pricesOrderSleeper.push(response.data[i].price.sleeper);
                                 }   
@@ -65,11 +51,14 @@ exports.getTrainDetails = (req, res) => {
                                 }   
                                 pricesOrderAC.sort((a, b) => a - b);
                                 console.log(pricesOrderAC);
+
                                 res.send({
-                                    "trainSchedule1": trainSchedule1,
-                                    "trainSchedule2": trainSchedule2,
-                                    "pricesOrderSleeper": pricesOrderSleeper,
-                                    "pricesOrderAC": pricesOrderAC
+                                    trainDetails,
+                                    trainPrice,
+                                    trainSeat,
+                                    trainTime,
+                                    pricesOrderSleeper,
+                                    pricesOrderAC
                                 });
                         }
                     )
