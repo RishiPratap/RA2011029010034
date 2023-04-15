@@ -44,14 +44,16 @@ function App() {
     <th>trainDetails</th>
     <th>trainPrice</th>
     <th>trainTime</th>
+    <th>available</th>
   </tr>
   {
     dataTrain.map((item,index) => {
       return (
-        <tr>
+        <tr onClick={() => alert("Seat Available")}>
           <td>{item.trainDetails}</td>
           <td>{item.trainPrice}</td>
           <td>{item.trainTime}</td>
+          <td>{item.available ? "Yes" : "No"}</td>
         </tr>
       )
     }

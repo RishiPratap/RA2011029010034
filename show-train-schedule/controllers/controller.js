@@ -29,11 +29,18 @@ exports.getTrainDetails = (req, res) => {
                             for (let i = 0; i < response.data.length; i++) {
                               const { trainName, price, seatsAvailable, departureTime } = response.data[i];
                               const trainTime = `${departureTime.Hours}:${departureTime.Minutes}`;
+                              const trainTimeinMin = departureTime.Hours * 60 + departureTime.Minutes;
+                              const currentTime = new Date();
+                            const currentHour = currentTime.getHours();
+                            const currentMin = currentTime.getMinutes();
+                            const currentTimeinMin = currentHour * 60 + currentMin;
+                            const timeDiff = trainTimeinMin - currentTimeinMin;
                               const train = {
                                 trainDetails: trainName,
                                 trainPrice: price.sleeper,
                                 trainSeat: seatsAvailable,
                                 trainTime: trainTime,
+                                available: timeDiff < 30 ? false : true
                               };
                               trainData.push(train);
                             }
