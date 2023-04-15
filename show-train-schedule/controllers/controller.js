@@ -25,18 +25,18 @@ exports.getTrainDetails = (req, res) => {
                     headers: {'Authorization': 'Bearer '+accessToken}}).then(
                         (response) => {
                             console.log(response.data);
-                            const trainDetails = [];
-                            const trainPrice = [];
-                            const trainSeat = [];
-                            const trainTime = [];
-
-                            for(let i=0;i<response.data.length;i++){
-                                trainDetails.push(response.data[i].trainName);
-                                trainPrice.push(response.data[i].price);
-                                trainSeat.push(response.data[i].seatsAvailable);
-                                trainTime.push(response.data[i].departureTime.Hours + ":" + response.data[i].departureTime.Minutes);
+                            const trainData = [];
+                            for (let i = 0; i < response.data.length; i++) {
+                              const { trainName, price, seatsAvailable, departureTime } = response.data[i];
+                              const trainTime = `${departureTime.Hours}:${departureTime.Minutes}`;
+                              const train = {
+                                trainDetails: trainName,
+                                trainPrice: price.sleeper,
+                                trainSeat: seatsAvailable,
+                                trainTime: trainTime,
+                              };
+                              trainData.push(train);
                             }
-
                                const pricesOrderSleeper = [];
                                 for (let i = 0; i < response.data.length; i++) {
                                     pricesOrderSleeper.push(response.data[i].price.sleeper);
@@ -51,15 +51,7 @@ exports.getTrainDetails = (req, res) => {
                                 }   
                                 pricesOrderAC.sort((a, b) => a - b);
                                 console.log(pricesOrderAC);
-
-                                res.send({
-                                    trainDetails,
-                                    trainPrice,
-                                    trainSeat,
-                                    trainTime,
-                                    pricesOrderSleeper,
-                                    pricesOrderAC
-                                });
+                                res.send(trainData);
                         }
                     )
             });

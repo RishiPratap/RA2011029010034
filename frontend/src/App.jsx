@@ -1,24 +1,36 @@
 import './App.css'
+import axios from 'axios'
 import { useEffect,useState } from 'react';
 
 function App() {
-  const [data, setData] = useState([{}]);
+  const [dataTrain, setDataTrain] = useState([
+    {
+      trainDetails: "LOADING",
+      trainPrice: "LOADING",
+      trainTime: "LOADING",
+    }
+  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/getDetails')
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setData(data);
+    async function getTrainDetails() {
+      try {
+        const response = await axios.get("http://localhost:8000/getDetails");
+        setDataTrain(response.data)
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
+        console.error(error);
         setError(error);
         setLoading(false);
-      });
+      }
+    }
+    getTrainDetails();
   }, []);
+  
+  useEffect(() => {
+    console.log(dataTrain);
+  }, [dataTrain]);
   
   return (
     <div className="App">
@@ -31,8 +43,20 @@ function App() {
   <tr>
     <th>trainDetails</th>
     <th>trainPrice</th>
-    <th>trainSeat</th>
+    <th>trainTime</th>
   </tr>
+  {
+    dataTrain.map((item,index) => {
+      return (
+        <tr>
+          <td>{item.trainDetails}</td>
+          <td>{item.trainPrice}</td>
+          <td>{item.trainTime}</td>
+        </tr>
+      )
+    }
+    )
+  }
   </table>
         </div>
     </div>
